@@ -7,12 +7,12 @@ module Lib
 
 nthHelper :: [a] -> Int -> Int -> [a]
 nthHelper [] _ _ = []
-nthHelper list n cur =
+nthHelper (x:xs) n cur =
   if mod cur n == 0
-    then (head list) : next
+    then x : next
     else next
   where
-    next = nthHelper (tail list) n (cur + 1)
+    next = nthHelper xs n (cur + 1)
 
 nth :: [a] -> Int -> [a]
 nth [] _ = []
@@ -25,7 +25,10 @@ skips list = list : map (nth list) [2..length list]
 
 -- 2. Local maxima
 localMaximaHelper :: Integer -> Integer -> [Integer] -> [Integer]
-localMaximaHelper _ _ [] = []
+localMaximaHelper prev curr [next] =
+  if curr > prev && curr > next
+    then [curr]
+    else []
 localMaximaHelper prev curr (next:remaining) =
   if curr > prev && curr > next
     then curr : others
@@ -35,6 +38,6 @@ localMaximaHelper prev curr (next:remaining) =
 
 localMaxima :: [Integer] -> [Integer]
 localMaxima list@(prev:curr:xs) =
-  if length list <= 2
+  if length list < 3
     then []
     else localMaximaHelper prev curr xs
